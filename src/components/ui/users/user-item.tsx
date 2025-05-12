@@ -22,13 +22,13 @@ type UserItemProps = {
 
 export default function UserItem({ user }: UserItemProps) {
   return (
-    <div className="flex items-center justify-between p-3 rounded-lg border bg-white shadow-sm">
-      <div className="flex items-center gap-4">
-        <Avatar className="h-14 w-14">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 rounded-lg border bg-white shadow-sm">
+      <div className="flex items-start md:items-center gap-4 flex-1">
+        <Avatar className="h-14 w-14 shrink-0">
           <AvatarFallback>{user.initials}</AvatarFallback>
         </Avatar>
         <div className="flex flex-col">
-          <div className="flex items-center gap-3 mb-2">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
             <span className="font-medium text-sm">{user.name}</span>
             <span className="flex items-center gap-1 text-xs text-muted-foreground">
               <User size={12} />
@@ -37,37 +37,30 @@ export default function UserItem({ user }: UserItemProps) {
               </p>
             </span>
           </div>
-          <ul className="flex items-center gap-3">
-            <li className="text-muted-foreground flex items-center gap-1 text-xs">
+          <ul className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted-foreground">
+            <li className="flex items-center gap-1">
               <Calendar size={12} />
               {formatDateTime(user.createdAt)}
             </li>
-            <li className="text-muted-foreground flex items-center gap-1 text-xs">
+            <li className="flex items-center gap-1">
               <Clock size={12} /> {user.sessionTime}
             </li>
-            <li className="text-muted-foreground flex items-center gap-1 text-xs">
+            <li className="flex items-center gap-1">
               <Tag size={12} /> {user.role}
             </li>
           </ul>
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
-        {user.status === "Ativo" ? (
-          <Badge
-            variant="secondary"
-            className="text-xs px-3 py-0.5 rounded-full"
-          >
-            {user.status}
-          </Badge>
-        ) : (
-          <Badge
-            variant="outline"
-            className="text-xs  text-[#71717A] px-3 py-0.5 rounded-full"
-          >
-            {user.status}
-          </Badge>
-        )}
+      <div className="flex items-center gap-2 justify-end">
+        <Badge
+          variant={user.status === "Ativo" ? "secondary" : "outline"}
+          className={`text-xs px-3 py-0.5 rounded-full ${
+            user.status === "Inativo" ? "text-[#71717A]" : ""
+          }`}
+        >
+          {user.status}
+        </Badge>
         <Button size="icon" variant="ghost" className="h-6 w-6">
           <MoreVertical size={14} />
         </Button>

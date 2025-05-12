@@ -5,16 +5,13 @@ import { Plus } from "lucide-react";
 import UserItem, { User } from "@/components/ui/users/user-item";
 import { users as mockUsers } from "@/mocks/users";
 import { Pagination } from "@/components/ui/users/pagination";
+import { UserModalForm } from "@/components/ui/users/user-modal-form";
 
 export default function Usuarios() {
   const [users, setUsers] = useState<User[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-
-  const paginatedUsers = users.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -23,8 +20,8 @@ export default function Usuarios() {
       const usersWithInitials: User[] = mockUsers.map((user) => {
         const initials = user.name
           .split(" ")
-          .filter((part) => part.length > 0)
-          .map((part) => part[0])
+          .filter(Boolean)
+          .map((n) => n[0])
           .join("")
           .substring(0, 2)
           .toUpperCase();
@@ -42,21 +39,60 @@ export default function Usuarios() {
     fetchUsers();
   }, []);
 
+  const paginatedUsers = users.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between mb-6">
         <h1 className="font-serif text-3xl font-normal">Usuários</h1>
-        <Button className="rounded-full h-[40px] font-medium font-sans text-sm flex items-center gap-2">
+        <Button
+          onClick={() => setIsModalOpen(true)}
+          className="rounded-full h-[40px] font-medium font-sans text-sm flex items-center gap-2"
+        >
           <Plus size={12} />
           Adicionar
         </Button>
       </div>
 
+      <UserModalForm
+        open={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        onSubmit={(newUser) => {
+          const initials = newUser.name
+            .split(" ")
+            .filter(Boolean)
+            .map((n) => n[0])
+            .join("")
+            .substring(0, 2)
+            .toUpperCase();
+
+          const userToAdd: User = {
+            ...newUser,
+            id: users.length + 1,
+            initials,
+            createdAt: new Date().toISOString(),
+            sessionTime: "38m22s",
+            status: newUser.status ? "Ativo" : "Inativo",
+          };
+
+          setUsers((prev) => [userToAdd, ...prev]);
+        }}
+      />
+
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-5">
-        <DashboardMetricCard title="Usuários" value="294" />
+        <DashboardMetricCard title="Usuários" value={String(users.length)} />
         <DashboardMetricCard title="Tempo de sessão" value="31m 20s" />
-        <DashboardMetricCard title="Ativos" value="203" />
-        <DashboardMetricCard title="Inativos" value="127" />
+        <DashboardMetricCard
+          title="Ativos"
+          value={String(users.filter((u) => u.status === "Ativo").length)}
+        />
+        <DashboardMetricCard
+          title="Inativos"
+          value={String(users.filter((u) => u.status === "Inativo").length)}
+        />
       </div>
 
       <div className="space-y-2">
