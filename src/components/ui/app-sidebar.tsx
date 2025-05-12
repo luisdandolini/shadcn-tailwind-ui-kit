@@ -30,7 +30,9 @@ export function AppSideBar() {
       </SidebarGroup>
 
       <SidebarGroup>
-        <SidebarGroupLabel className="mb-[6px]">Menu</SidebarGroupLabel>
+        <SidebarGroupLabel className="mb-[6px] text-xs font-sans font-normal">
+          Menu
+        </SidebarGroupLabel>
         <SidebarMenu>
           <SidebarMenuItem>
             <NavLink to="/" className="w-full">
@@ -67,7 +69,7 @@ export function AppSideBar() {
         </SidebarMenu>
 
         <SidebarGroup className="p-[-32px] mt-[6px]">
-          <SidebarGroupLabel className="mb-[6px] font">
+          <SidebarGroupLabel className="mb-[6px] text-xs font-sans font-normal">
             Configurações
           </SidebarGroupLabel>
           <SidebarMenu>
@@ -90,7 +92,7 @@ export function AppSideBar() {
           variant="outline"
           className="w-full shadow-none justify-between text-muted-foreground !font-sans rounded-full border-none h-[40px] text-[#102822]"
         >
-          <span>Precisa de ajuda?</span>
+          <span className="font-sans font-normal">Precisa de ajuda?</span>
           <Headset size={16} />
         </Button>
       </SidebarFooter>
