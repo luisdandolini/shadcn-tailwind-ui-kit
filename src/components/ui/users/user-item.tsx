@@ -1,8 +1,22 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, MoreVertical, Tag, User } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  Edit,
+  MoreVertical,
+  Tag,
+  Trash,
+  User,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatDateTime } from "@/utils/formatDateTime";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../dropdown-menu";
 
 export type User = {
   id: number;
@@ -18,9 +32,11 @@ export type User = {
 
 type UserItemProps = {
   user: User;
+  onEdit: () => void;
+  onDelete: () => void;
 };
 
-export default function UserItem({ user }: UserItemProps) {
+export default function UserItem({ user, onEdit, onDelete }: UserItemProps) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 rounded-lg border bg-white shadow-sm">
       <div className="flex items-start md:items-center gap-4 flex-1">
@@ -61,9 +77,21 @@ export default function UserItem({ user }: UserItemProps) {
         >
           {user.status}
         </Badge>
-        <Button size="icon" variant="ghost" className="h-6 w-6">
-          <MoreVertical size={14} />
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button size="icon" variant="ghost" className="h-6 w-6">
+              <MoreVertical size={14} />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-40">
+            <DropdownMenuItem onClick={onEdit}>
+              <Edit size={14} className="mr-2" /> Editar
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={onDelete} className="text-red-500">
+              <Trash size={14} className="mr-2" /> Excluir
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );

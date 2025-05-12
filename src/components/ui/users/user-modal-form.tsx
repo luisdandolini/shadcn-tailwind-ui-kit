@@ -15,6 +15,7 @@ import { Controller, useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "@/hooks/use-toast";
+import { useEffect } from "react";
 
 const userSchema = z.object({
   name: z.string().min(3, "Digite ao menos 3 letras"),
@@ -42,12 +43,14 @@ type UserModalFormProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSubmit: (data: UserFormData) => void;
+  defaultValues?: Partial<UserFormData> | null;
 };
 
 export function UserModalForm({
   open,
   onOpenChange,
   onSubmit,
+  defaultValues,
 }: UserModalFormProps) {
   const {
     register,
@@ -61,8 +64,19 @@ export function UserModalForm({
     defaultValues: {
       whatsapp: false,
       status: true,
+      ...(defaultValues ?? {}),
     },
   });
+
+  useEffect(() => {
+    if (open) {
+      reset({
+        whatsapp: false,
+        status: true,
+        ...(defaultValues ?? {}),
+      });
+    }
+  }, [defaultValues, open, reset]);
 
   const isActive = watch("status");
 

@@ -12,6 +12,7 @@ export default function Usuarios() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [userToEdit, setUserToEdit] = useState<User | null>(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -59,9 +60,12 @@ export default function Usuarios() {
 
       <UserModalForm
         open={isModalOpen}
-        onOpenChange={setIsModalOpen}
-        onSubmit={(newUser) => {
-          const initials = newUser.name
+        onOpenChange={(open) => {
+          setIsModalOpen(open);
+          if (!open) setUserToEdit(null); // reseta ao fechar
+        }}
+        onSubmit={(formData) => {
+          const initials = formData.name
             .split(" ")
             .filter(Boolean)
             .map((n) => n[0])
@@ -69,17 +73,41 @@ export default function Usuarios() {
             .substring(0, 2)
             .toUpperCase();
 
-          const userToAdd: User = {
-            ...newUser,
-            id: users.length + 1,
+          const updatedUser: User = {
+            ...formData,
+            id: userToEdit?.id ?? users.length + 1,
             initials,
-            createdAt: new Date().toISOString(),
-            sessionTime: "38m22s",
-            status: newUser.status ? "Ativo" : "Inativo",
+            createdAt: userToEdit?.createdAt ?? new Date().toISOString(),
+            sessionTime: userToEdit?.sessionTime ?? "00m00s",
+            status: formData.status ? "Ativo" : "Inativo",
           };
 
-          setUsers((prev) => [userToAdd, ...prev]);
+          if (userToEdit) {
+            setUsers((prev) =>
+              prev.map((u) => (u.id === updatedUser.id ? updatedUser : u))
+            );
+          } else {
+            setUsers((prev) => [updatedUser, ...prev]);
+          }
+
+          setUserToEdit(null);
         }}
+        defaultValues={
+          userToEdit
+            ? {
+                name: userToEdit.name,
+                email: "",
+                phone: "",
+                cpf: "",
+                rg: "",
+                age: userToEdit.age,
+                gender: userToEdit.gender as "Homem" | "Mulher" | "Outro",
+                role: userToEdit.role,
+                whatsapp: false,
+                status: userToEdit.status === "Ativo",
+              }
+            : undefined
+        }
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-5">
@@ -97,7 +125,17 @@ export default function Usuarios() {
 
       <div className="space-y-2">
         {paginatedUsers.map((user) => (
-          <UserItem key={user.id} user={user} />
+          <UserItem
+            key={user.id}
+            user={user}
+            onEdit={() => {
+              setUserToEdit(user);
+              setIsModalOpen(true);
+            }}
+            onDelete={() => {
+              setUsers((prev) => prev.filter((u) => u.id !== user.id));
+            }}
+          />
         ))}
       </div>
 
