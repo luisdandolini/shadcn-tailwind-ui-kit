@@ -4,6 +4,6 @@ import "./index.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <h2 className="text-center">Oi com Tailwind</h2>
+    <h2 className="text-center">Teste</h2>
   </StrictMode>
 );
