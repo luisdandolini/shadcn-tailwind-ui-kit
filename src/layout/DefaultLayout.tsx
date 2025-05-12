@@ -19,7 +19,7 @@ export default function DefaultLayout() {
         </Sidebar>
         <div className="flex flex-col w-full">
           <SiteHeader />
-          <main className="w-full h-full p-4">
+          <main className="w-full h-full p-10">
             <Outlet />
           </main>
         </div>
