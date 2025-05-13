@@ -39,7 +39,7 @@ Este projeto é um painel de gerenciamento de usuários com funcionalidades de c
 
 ```bash
 # Clone o repositório
-git clone https://github.com/seu-usuario/seu-projeto.git
+git clone https://github.com/luisdandolini/shadcn-tailwind-ui-kit.git
 
 # Acesse a pasta do projeto
 cd seu-projeto
