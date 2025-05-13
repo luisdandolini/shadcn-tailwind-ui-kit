@@ -6,6 +6,7 @@ import UserItem, { User } from "@/components/ui/users/user-item";
 import { users as mockUsers } from "@/mocks/users";
 import { Pagination } from "@/components/ui/users/pagination";
 import { UserModalForm } from "@/components/ui/users/user-modal-form";
+import { LoadingSpinner } from "@/components/loading-spinner";
 
 export default function Usuarios() {
   const [users, setUsers] = useState<User[]>([]);
@@ -13,10 +14,11 @@ export default function Usuarios() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [userToEdit, setUserToEdit] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchUsers = async () => {
-      await new Promise((res) => setTimeout(res, 300));
+      await new Promise((res) => setTimeout(res, 800));
 
       const usersWithInitials: User[] = mockUsers.map((user) => {
         const initials = user.name
@@ -35,6 +37,7 @@ export default function Usuarios() {
       });
 
       setUsers(usersWithInitials);
+      setIsLoading(false);
     };
 
     fetchUsers();
@@ -44,6 +47,10 @@ export default function Usuarios() {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="flex flex-col gap-4">
